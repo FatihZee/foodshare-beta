@@ -3,16 +3,41 @@
 @section('title', 'Detail Donasi')
 
 @section('content')
-<h1>Detail Donasi</h1>
+    <div class="container mt-4">
+        @if (session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @elseif (session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
 
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title">Nama Makanan: {{ $donation->food_name }}</h5>
-        <p class="card-text">Jumlah: {{ $donation->quantity }}</p>
-        <p class="card-text">Lokasi: {{ $donation->location }}</p>
-        <p class="card-text">Tanggal Kadaluarsa: {{ $donation->expiration }}</p>
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-4">
+                <h1 class="text-center mb-4">Detail Donasi</h1>
+                
+                <div class="mb-3">
+                    <h5 class="fw-bold">Nama Makanan:</h5>
+                    <p class="card-text">{{ $donation->food_name }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <h5 class="fw-bold">Jumlah:</h5>
+                    <p class="card-text">{{ $donation->quantity }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <h5 class="fw-bold">Lokasi:</h5>
+                    <p class="card-text">{{ $donation->location }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <h5 class="fw-bold">Tanggal Kadaluarsa:</h5>
+                    <p class="card-text">{{ date('d M Y, H:i', strtotime($donation->expiration)) }}</p>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <a href="{{ route('donations.index') }}" class="btn btn-secondary">Kembali</a>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-
-<a href="{{ route('donations.index') }}" class="btn btn-secondary mt-3">Kembali</a>
 @endsection

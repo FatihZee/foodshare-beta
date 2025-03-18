@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Claim;
 use App\Models\Donation;
 use Illuminate\Http\Request;
+use App\Helpers\FonnteHelper;
 use Illuminate\Support\Facades\Auth;
 use App\Services\WhatsAppNotificationService;
 
@@ -22,13 +23,6 @@ class ClaimController extends Controller
     {
         $donations = Donation::where('status', 'available')->get();
         return view('claims.create', compact('donations'));
-    }
-    
-    protected $whatsappService;
-
-    public function __construct(WhatsAppNotificationService $whatsappService)
-    {
-        $this->whatsappService = $whatsappService;
     }
 
     // Menyimpan klaim baru
@@ -50,20 +44,33 @@ class ClaimController extends Controller
 
         // Buat klaim
         $claim = Claim::create([
-            'user_id' => Auth::check() ? Auth::id() : null,
+            'user_id' => Auth::id(),
             'donation_id' => $donation->id,
             'queue_number' => $queueNumber,
         ]);
 
-        // Kurangi jumlah makanan & cek status
-        $donation->decrementQuantity();
-        
-        // Kirimkan notifikasi WhatsApp
-        $userPhone = $request->user()->phone; // Misalnya nomor telepon user disimpan
-        $message = "Selamat, Anda berhasil melakukan klaim donasi. Nomor antrian Anda adalah {$claim->queue_number}.";
-        $this->whatsappService->sendMessage($userPhone, $message);
+        // Kurangi jumlah makanan
+        $donation->decrement('quantity');
 
-        return redirect()->route('claims.index')->with('success', 'Klaim berhasil dibuat!');
+        // Cek apakah quantity sudah 0, lalu update status menjadi 'completed'
+        if ($donation->quantity <= 0) {
+            $donation->update(['status' => 'completed']);
+        }
+
+        // Kirim pesan WhatsApp ke user
+        $user = Auth::user();
+        if ($user && $user->phone) {
+            $message = "🎉 [FoodShare] Terima kasih telah berbagi dan peduli! 🎉  
+            \nHalo {$user->name}, selamat! Klaim makanan Anda telah berhasil! 🍽️✨  
+            \n🔢 No. Antrean: {$queueNumber}  
+            \n📍 Lokasi: {$donation->location}  
+            \n⏳ Silakan datang sebelum: {$donation->expiration}  
+            \nJangan lupa datang tepat waktu ya! Semoga bermanfaat dan tetap berbagi kebaikan! ❤️ #FoodShare";
+            
+            FonnteHelper::sendMessage($user->phone, $message);
+        }
+
+        return redirect()->route('claims.index')->with('success', 'Klaim berhasil dibuat dan pesan WhatsApp dikirim!');
     }
 
     // Menampilkan detail klaim
