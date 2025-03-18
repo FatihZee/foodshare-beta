@@ -26,11 +26,23 @@
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     @auth
-                        <li class="nav-item">
-                            <form action="{{ route('logout') }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-danger btn-sm">Logout</button>
-                            </form>
+                        <!-- Dropdown Profil -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" id="navbarProfile" role="button" data-bs-toggle="dropdown">
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=random&color=fff" alt="Profile" class="rounded-circle me-2" width="32" height="32">
+                                {{ Auth::user()->name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><span class="dropdown-item-text"><strong>{{ Auth::user()->name }}</strong></span></li>
+                                <li><span class="dropdown-item-text text-muted">{{ Auth::user()->email }}</span></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item text-danger">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
                         </li>
                     @else
                         <li class="nav-item"><a href="{{ route('login') }}" class="btn btn-light btn-sm">Login</a></li>
@@ -38,7 +50,7 @@
                 </ul>
             </div>
         </div>
-    </nav>
+    </nav>    
 
     <!-- Content -->
     <div class="container mt-4">

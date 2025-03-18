@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Donation extends Model
 {
     protected $fillable = [
-        'donor_id', 'food_name', 'quantity', 'location', 'expiration', 'status'
-    ];
+        'donor_id', 'donor_name', 'food_name', 'quantity', 'location', 'expiration',
+    ];    
 
     public function donor()
     {
@@ -17,10 +17,8 @@ class Donation extends Model
     
     public function decrementQuantity()
     {
-        // Kurangi jumlah makanan
         $this->decrement('quantity');
 
-        // Kalau quantity = 0, ubah status jadi completed
         if ($this->quantity <= 0) {
             $this->update(['status' => 'completed']);
         }

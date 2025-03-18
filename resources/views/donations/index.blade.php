@@ -25,6 +25,7 @@
                                 <th>Nama Makanan</th>
                                 <th>Jumlah</th>
                                 <th>Lokasi</th>
+                                <th>Donatur</th> <!-- Tambahan Kolom Donatur -->
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
@@ -35,6 +36,13 @@
                                     <td>{{ $donation->food_name }}</td>
                                     <td>{{ $donation->quantity }}</td>
                                     <td>{{ $donation->location }}</td>
+                                    <td>
+                                        @if ($donation->donor_id)
+                                            {{ $donation->donor->name }} <!-- Nama user login -->
+                                        @else
+                                            {{ $donation->donor_name }} <!-- Nama guest -->
+                                        @endif
+                                    </td>
                                     <td>
                                         <span class="badge bg-{{ $donation->status === 'pending' ? 'warning' : ($donation->status === 'approved' ? 'success' : 'danger') }}">
                                             {{ ucfirst($donation->status) }}

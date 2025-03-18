@@ -34,6 +34,13 @@
                         <label class="form-label fw-bold">Tanggal Kadaluarsa</label>
                         <input type="datetime-local" name="expiration" class="form-control" required>
                     </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nama Donatur (kosongkan untuk Hamba Allah)</label>
+                        <input type="text" name="donor_name" class="form-control" 
+                               placeholder="Masukkan nama atau kosongkan jika ingin anonim" 
+                               {{ auth()->check() ? 'disabled' : '' }}>
+                    </div>                    
 
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-primary">Simpan</button>
