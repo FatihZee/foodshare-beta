@@ -6,7 +6,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\DonationController;
 
-Route::get('/', [AuthController::class, 'loginForm'])->name('login')->middleware('guest');
+Route::get('/', function () {
+    return view('home');
+})->name('home');
 
 Route::resource('donations', DonationController::class);
 

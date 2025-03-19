@@ -1,67 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>@yield('title', 'Aplikasi Pengguna')</title>
+    <title>@yield('title', 'Aplikasi Modern')</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-</head>
-<body class="bg-light text-dark">
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-primary bg-primary">
-        <div class="container">
-            <a class="navbar-brand text-white" href="{{ route('users.index') }}">FoodShare</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link text-white" href="{{ route('users.index') }}">Users</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="{{ route('users.create') }}">Tambah User</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="{{ route('donations.index') }}">Donasi</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="{{ route('donations.create') }}">Tambah Donasi</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="{{ route('claims.index') }}">Klaim</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="{{ route('claims.create') }}">Buat Klaim</a></li>
-                </ul>
-                <ul class="navbar-nav ms-auto">
-                    @auth
-                        <!-- Dropdown Profil -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" id="navbarProfile" role="button" data-bs-toggle="dropdown">
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=random&color=fff" alt="Profile" class="rounded-circle me-2" width="32" height="32">
-                                {{ Auth::user()->name }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><span class="dropdown-item-text"><strong>{{ Auth::user()->name }}</strong></span></li>
-                                <li><span class="dropdown-item-text text-muted">{{ Auth::user()->email }}</span></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item text-danger">Logout</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-                    @else
-                        <li class="nav-item"><a href="{{ route('login') }}" class="btn btn-light btn-sm">Login</a></li>
-                    @endauth
-                </ul>
-            </div>
-        </div>
-    </nav>    
+    <script src="https://kit.fontawesome.com/e0c2ef87df.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background: #f8f9fa;
+            color: #212529;
+        }
 
-    <!-- Content -->
-    <div class="container mt-4">
-        @yield('content')
+        .navbar {
+            background: white;
+            padding: 12px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: #212529;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #0d6efd;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            z-index: 999;
+            transition: left 0.3s ease;
+            z-index: 998;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #212529;
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            background: #e9ecef;
+        }
+
+        .content {
+            margin-left: 260px;
+            margin-top: 70px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .footer {
+            background: white;
+            text-align: center;
+            padding: 10px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .container-fluid {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        /* Responsif */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+                top: 70px; /* Sesuaikan dengan tinggi navbar */
+                left: -200px;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .content {
+                margin-left: 0;
+                margin-top: 70px;
+            }
+
+            .navbar {
+                padding: 8px 15px;
+            }
+
+            .sidebar a {
+                font-size: 14px;
+            }
+
+            .footer {
+                font-size: 12px;
+            }
+
+            .navbar .toggle-btn {
+                display: block; /* Menampilkan tombol toggle di navbar */
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar {
+                padding: 10px 15px;
+            }
+
+            .sidebar {
+                width: 100%;
+                left: -100%;
+                top: 70px; /* Sesuaikan dengan tinggi navbar */
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .content {
+                margin-left: 0;
+                margin-top: 70px;
+                padding: 15px;
+            }
+            
+            .content.shifted {
+                margin-left: 0; /* Konten akan bergeser ketika sidebar terbuka */
+            }
+
+            .footer {
+                font-size: 10px;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        @auth
+            <!-- Jika user adalah admin, tampilkan semua menu -->
+            @if (Auth::user()->role == 'admin')
+                <a href="{{ route('users.index') }}">
+                    <i class="fas fa-users fa-fw"></i> <!-- Tambahkan fa-fw untuk lebar tetap -->
+                    <span>Users</span>
+                </a>
+            @endif
+            <a href="{{ route('donations.index') }}">
+                <i class="fas fa-hand-holding-heart fa-fw"></i>
+                <span>Donasi</span>
+            </a>
+            <a href="{{ route('claims.index') }}">
+                <i class="fas fa-receipt fa-fw"></i>
+                <span>Klaim</span>
+            </a>
+        @else
+            <!-- Jika belum login, tampilkan menu selain Users -->
+            <a href="{{ route('donations.index') }}">
+                <i class="fas fa-hand-holding-heart fa-fw"></i>
+                <span>Donasi</span>
+            </a>
+            <a href="{{ route('claims.index') }}">
+                <i class="fas fa-receipt fa-fw"></i>
+                <span>Klaim</span>
+            </a>
+        @endauth
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3 mt-4 fixed-bottom">
-        &copy; {{ date('Y') }} Aplikasi Pengguna
-    </footer>
+    <div class="d-flex flex-column w-100">
+        <div class="navbar d-flex justify-content-between align-items-center">
+            <a href="{{ route('home') }}" class="fs-3 fw-bold text-primary text-uppercase text-decoration-none">
+                FoodShare
+            </a>
+
+            <!-- Tombol Toggle Sidebar (hanya muncul di layar kecil) -->
+            <button class="btn btn-outline-dark toggle-btn" id="sidebarToggle">
+                <i class="fas fa-bars"></i> <!-- Ikon hamburger -->
+            </button>
+
+            <div>
+                @auth
+                    <div class="dropdown">
+                        <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle"></i> {{ Auth::user()->name }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ route('users.edit', ['user' => Auth::user()->id]) }}">Edit Profile</a></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
+                            </li>
+                        </ul>
+                    </div>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-primary">Login</a>
+                @endauth
+            </div>
+        </div>
+
+        <div class="content">
+            @yield('content')
+        </div>
+
+        <div class="footer">
+            &copy; {{ date('Y') }} Aplikasi Modern
+        </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('active');
+            document.querySelector('.content').classList.toggle('shifted');
+        });
+
+    </script>
 </body>
+
 </html>
