@@ -27,8 +27,10 @@ class DonationController extends Controller
             'location' => 'required|string',
             'expiration' => 'required|date|after:today',
             'donor_name' => 'nullable|string|max:255',
+            'maps' => 'nullable|url', // Validasi untuk link Google Maps
         ]);
 
+        // Menyimpan donasi dengan link Google Maps
         Donation::create([
             'donor_id' => Auth::check() ? Auth::id() : null,
             'donor_name' => Auth::check() ? null : ($request->donor_name ?? 'Hamba Allah'),
@@ -36,6 +38,7 @@ class DonationController extends Controller
             'quantity' => $request->quantity,
             'location' => $request->location,
             'expiration' => $request->expiration,
+            'maps' => $request->maps, // Menyimpan link Google Maps
         ]);
 
         return redirect()->route('donations.index')->with('success', 'Donasi berhasil ditambahkan!');
@@ -56,21 +59,31 @@ class DonationController extends Controller
 
     public function update(Request $request, Donation $donation)
     {
-        if (Auth::id() !== $donation->donor_id) {
+        if (Auth::id() !== $donation->donor_id && auth()->user()->role !== 'admin') {
             abort(403, 'Unauthorized');
         }
 
-        $donation->update($request->only('food_name', 'quantity', 'location', 'expiration', 'status'));
+        $request->validate([
+            'food_name' => 'required|string|max:255',
+            'quantity' => 'required|integer|min:1',
+            'location' => 'required|string',
+            'expiration' => 'required|date|after:today',
+            'maps' => 'nullable|url', // Validasi untuk link Google Maps
+        ]);
+
+        $donation->update($request->only('food_name', 'quantity', 'location', 'expiration', 'status', 'maps'));
         return redirect()->route('donations.index')->with('success', 'Donasi berhasil diupdate!');
     }
 
     public function destroy(Donation $donation)
     {
-        if (Auth::id() !== $donation->donor_id) {
+        // Cek apakah user adalah pemilik donasi atau admin
+        if (Auth::id() !== $donation->donor_id && auth()->user()->role !== 'admin') {
             abort(403, 'Unauthorized');
         }
 
         $donation->delete();
         return redirect()->route('donations.index')->with('success', 'Donasi berhasil dihapus!');
-    }
+}
+
 }

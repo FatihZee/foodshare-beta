@@ -34,6 +34,15 @@
                     <p class="card-text">{{ date('d M Y, H:i', strtotime($donation->expiration)) }}</p>
                 </div>
 
+                <div class="mb-3">
+                    <h5 class="fw-bold">Link Lokasi (Google Maps):</h5>
+                    @if ($donation->maps)
+                        <a href="{{ $donation->maps }}" target="_blank" class="card-text text-decoration-none">Lihat di Google Maps</a>
+                    @else
+                        <p class="card-text text-muted">Lokasi belum tersedia</p>
+                    @endif
+                </div>
+
                 <div class="d-flex justify-content-end">
                     <a href="{{ route('donations.index') }}" class="btn btn-secondary">Kembali</a>
                 </div>

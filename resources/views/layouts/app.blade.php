@@ -187,9 +187,10 @@
             </a>
 
             <!-- Tombol Toggle Sidebar (hanya muncul di layar kecil) -->
-            <button class="btn btn-outline-dark toggle-btn" id="sidebarToggle">
+            <button class="btn btn-outline-dark toggle-btn d-md-none d-block" id="sidebarToggle">
                 <i class="fas fa-bars"></i> <!-- Ikon hamburger -->
             </button>
+
 
             <div>
                 @auth

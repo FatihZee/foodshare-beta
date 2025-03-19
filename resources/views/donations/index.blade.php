@@ -27,6 +27,7 @@
                                 <th>Lokasi</th>
                                 <th>Donatur</th> <!-- Tambahan Kolom Donatur -->
                                 <th>Status</th>
+                                <th>Maps</th> <!-- Kolom baru untuk menampilkan link maps -->
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -49,15 +50,22 @@
                                         </span>
                                     </td>
                                     <td>
+                                        @if ($donation->maps)
+                                            <a href="{{ $donation->maps }}" target="_blank" class="btn btn-info">Lihat Lokasi</a>
+                                        @else
+                                            <span>-</span>
+                                        @endif
+                                    </td>
+                                    <td>
                                         <a href="{{ route('donations.show', $donation) }}" class="btn btn-info btn-sm">Detail</a>
-                                        @if (Auth::id() === $donation->donor_id)
+                                        @if (Auth::id() === $donation->donor_id || auth()->user()->role === 'admin') <!-- Cek apakah admin atau donatur -->
                                             <a href="{{ route('donations.edit', $donation) }}" class="btn btn-warning btn-sm">Edit</a>
                                             <form action="{{ route('donations.destroy', $donation) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus donasi ini?');">
                                                 @csrf @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                                             </form>
                                         @endif
-                                    </td>
+                                    </td>                                                                     
                                 </tr>
                             @endforeach
                         </tbody>

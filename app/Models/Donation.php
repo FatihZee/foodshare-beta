@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class Donation extends Model
 {
     protected $fillable = [
-        'donor_id', 'donor_name', 'food_name', 'quantity', 'location', 'expiration',
+        'donor_id', 'donor_name', 'food_name', 'quantity', 'location', 'expiration', 'maps',
     ];    
 
     public function donor()
     {
         return $this->belongsTo(User::class, 'donor_id');
     }
-    
+
     public function decrementQuantity()
     {
         $this->decrement('quantity');

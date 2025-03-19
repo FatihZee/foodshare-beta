@@ -40,7 +40,12 @@
                         <input type="text" name="donor_name" class="form-control" 
                                placeholder="Masukkan nama atau kosongkan jika ingin anonim" 
                                {{ auth()->check() ? 'disabled' : '' }}>
-                    </div>                    
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="maps" class="form-label fw-bold">Link Lokasi (Google Maps)</label>
+                        <input type="url" name="maps" id="maps" class="form-control" placeholder="Masukkan link lokasi di Google Maps">
+                    </div>
 
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-primary">Simpan</button>

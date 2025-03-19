@@ -7,7 +7,8 @@ use App\Models\Donation;
 use Illuminate\Http\Request;
 use App\Helpers\FonnteHelper;
 use Illuminate\Support\Facades\Auth;
-use App\Services\WhatsAppNotificationService;
+use App\Helpers\ClaimMessageHelper;
+use Illuminate\Support\Facades\DB;
 
 class ClaimController extends Controller
 {
@@ -29,39 +30,47 @@ class ClaimController extends Controller
             'donation_id' => 'required|exists:donations,id',
         ]);
 
-        $donation = Donation::findOrFail($request->donation_id);
+        DB::beginTransaction();
+        try {
+            $donation = Donation::findOrFail($request->donation_id);
 
-        if ($donation->quantity <= 0) {
-            return back()->with('error', 'Makanan sudah habis!');
+            if ($donation->quantity <= 0) {
+                return back()->with('error', 'Makanan sudah habis!');
+            }
+
+            $queueNumber = Claim::where('donation_id', $donation->id)->count() + 1;
+
+            $claim = Claim::create([
+                'user_id' => Auth::id(),
+                'donation_id' => $donation->id,
+                'queue_number' => $queueNumber,
+            ]);
+
+            $donation->decrement('quantity');
+
+            if ($donation->quantity <= 0) {
+                $donation->update(['status' => 'completed']);
+            }
+
+            // Kirim pesan WA jika user punya nomor telepon
+            $user = Auth::user();
+            if ($user && $user->phone) {
+                $message = ClaimMessageHelper::generateClaimMessage($user, $donation, $queueNumber);
+                $sent = FonnteHelper::sendMessage($user->phone, $message);
+
+                if (!$sent) {
+                    // Jika gagal kirim, rollback transaksi agar makanan tidak berkurang
+                    DB::rollBack();
+                    return back()->with('error', 'Gagal mengirim notifikasi WhatsApp. Silakan coba lagi.');
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('claims.index')->with('success', 'Klaim berhasil dibuat dan pesan WhatsApp dikirim!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
-
-        $queueNumber = Claim::where('donation_id', $donation->id)->count() + 1;
-
-        $claim = Claim::create([
-            'user_id' => Auth::id(),
-            'donation_id' => $donation->id,
-            'queue_number' => $queueNumber,
-        ]);
-
-        $donation->decrement('quantity');
-
-        if ($donation->quantity <= 0) {
-            $donation->update(['status' => 'completed']);
-        }
-
-        $user = Auth::user();
-        if ($user && $user->phone) {
-            $message = "🎉 [FoodShare] Terima kasih telah berbagi dan peduli! 🎉  
-            \nHalo {$user->name}, selamat! Klaim makanan Anda telah berhasil! 🍽️✨  
-            \n🔢 No. Antrean: {$queueNumber}  
-            \n📍 Lokasi: {$donation->location}  
-            \n⏳ Silakan datang sebelum: {$donation->expiration}  
-            \nJangan lupa datang tepat waktu ya! Semoga bermanfaat dan tetap berbagi kebaikan! ❤️ #FoodShare";
-            
-            FonnteHelper::sendMessage($user->phone, $message);
-        }
-
-        return redirect()->route('claims.index')->with('success', 'Klaim berhasil dibuat dan pesan WhatsApp dikirim!');
     }
 
     public function show(Claim $claim)

@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class FonnteHelper
 {
@@ -10,14 +11,30 @@ class FonnteHelper
     {
         $token = env('FONNTE_TOKEN'); // Ambil token dari .env
 
-        $response = Http::withHeaders([
-            'Authorization' => $token,
-        ])->post('https://api.fonnte.com/send', [
-            'target' => $target,
-            'message' => $message,
-            'countryCode' => '62', // Opsional
-        ]);
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => $token,
+            ])->post('https://api.fonnte.com/send', [
+                'target' => $target,
+                'message' => $message,
+                'countryCode' => '62', // Opsional
+            ]);
 
-        return $response->json();
+            if ($response->successful()) {
+                $result = $response->json();
+                if (isset($result['status']) && $result['status'] === true) {
+                    return true;
+                } else {
+                    Log::error('Fonnte: Gagal mengirim pesan. Respons: ' . json_encode($result));
+                    return false;
+                }
+            } else {
+                Log::error('Fonnte: HTTP Error ' . $response->status());
+                return false;
+            }
+        } catch (\Exception $e) {
+            Log::error('Fonnte: Exception saat mengirim pesan - ' . $e->getMessage());
+            return false;
+        }
     }
 }

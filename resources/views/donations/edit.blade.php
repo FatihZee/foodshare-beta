@@ -36,6 +36,11 @@
                         <label class="form-label fw-bold">Tanggal Kadaluarsa</label>
                         <input type="datetime-local" name="expiration" class="form-control" value="{{ date('Y-m-d\\TH:i', strtotime($donation->expiration)) }}" required>
                     </div>
+                    
+                    <div class="mb-3">
+                        <label for="maps" class="form-label fw-bold">Link Lokasi (Google Maps)</label>
+                        <input type="url" name="maps" id="maps" class="form-control" placeholder="Masukkan link lokasi di Google Maps" value="{{ old('maps', $donation->maps) }}">
+                    </div>
 
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-primary">Update</button>
