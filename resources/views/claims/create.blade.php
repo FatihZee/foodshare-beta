@@ -34,9 +34,8 @@
 
 @push('styles')
 <style>
-    /* Pastikan container di tengah */
     .claim-container {
-        height: calc(100vh - 160px); /* Mengurangi tinggi untuk navbar dan footer */
+        height: calc(100vh - 160px);
         display: flex;
         align-items: center;
         justify-content: center;

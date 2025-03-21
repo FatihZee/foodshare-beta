@@ -26,18 +26,18 @@ class DonationController extends Controller
             'quantity' => 'required|integer|min:1',
             'location' => 'required|string',
             'donor_name' => 'nullable|string|max:255',
-            'maps' => 'nullable|url', // Validasi untuk link Google Maps
+            'maps' => 'nullable|url',
         ]);
 
-        // Menyimpan donasi dengan waktu expired otomatis 30 menit ke depan
         Donation::create([
             'donor_id' => Auth::check() ? Auth::id() : null,
-            'donor_name' => Auth::check() ? null : ($request->donor_name ?? 'Hamba Allah'),
+            'donor_name' => $request->donor_name ?: 'Hamba Allah',
             'food_name' => $request->food_name,
             'quantity' => $request->quantity,
             'location' => $request->location,
-            'expiration' => now()->addMinutes(30), // Set otomatis 30 menit ke depan
-            'maps' => $request->maps, // Menyimpan link Google Maps
+            'expiration' => now()->addMinutes(30),
+            'maps' => $request->maps,
+            'status' => 'available'
         ]);
 
         return redirect()->route('donations.index')->with('success', 'Donasi berhasil ditambahkan! Waktu kedaluwarsa otomatis diatur 30 menit ke depan.');
@@ -67,7 +67,7 @@ class DonationController extends Controller
             'quantity' => 'required|integer|min:1',
             'location' => 'required|string',
             'expiration' => 'required|date|after:today',
-            'maps' => 'nullable|url', // Validasi untuk link Google Maps
+            'maps' => 'nullable|url',
         ]);
 
         $donation->update($request->only('food_name', 'quantity', 'location', 'expiration', 'status', 'maps'));
@@ -76,7 +76,6 @@ class DonationController extends Controller
 
     public function destroy(Donation $donation)
     {
-        // Cek apakah user adalah pemilik donasi atau admin
         if (Auth::id() !== $donation->donor_id && auth()->user()->role !== 'admin') {
             abort(403, 'Unauthorized');
         }

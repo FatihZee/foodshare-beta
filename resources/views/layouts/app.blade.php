@@ -82,11 +82,10 @@
             padding-right: 0;
         }
 
-        /* Responsif */
         @media (max-width: 768px) {
             .sidebar {
                 width: 200px;
-                top: 70px; /* Sesuaikan dengan tinggi navbar */
+                top: 70px;
                 left: -200px;
             }
 
@@ -112,7 +111,7 @@
             }
 
             .navbar .toggle-btn {
-                display: block; /* Menampilkan tombol toggle di navbar */
+                display: block;
             }
         }
 
@@ -124,7 +123,7 @@
             .sidebar {
                 width: 100%;
                 left: -100%;
-                top: 70px; /* Sesuaikan dengan tinggi navbar */
+                top: 70px;
             }
 
             .sidebar.active {
@@ -138,7 +137,7 @@
             }
             
             .content.shifted {
-                margin-left: 0; /* Konten akan bergeser ketika sidebar terbuka */
+                margin-left: 0;
             }
 
             .footer {
@@ -152,10 +151,9 @@
 <body>
     <div class="sidebar">
         @auth
-            <!-- Jika user adalah admin, tampilkan semua menu -->
             @if (Auth::user()->role == 'admin')
                 <a href="{{ route('users.index') }}">
-                    <i class="fas fa-users fa-fw"></i> <!-- Tambahkan fa-fw untuk lebar tetap -->
+                    <i class="fas fa-users fa-fw"></i>
                     <span>Users</span>
                 </a>
             @endif
@@ -168,7 +166,6 @@
                 <span>Klaim</span>
             </a>
         @else
-            <!-- Jika belum login, tampilkan menu selain Users -->
             <a href="{{ route('donations.index') }}">
                 <i class="fas fa-hand-holding-heart fa-fw"></i>
                 <span>Donasi</span>
@@ -186,9 +183,8 @@
                 FoodShare
             </a>
 
-            <!-- Tombol Toggle Sidebar (hanya muncul di layar kecil) -->
             <button class="btn btn-outline-dark toggle-btn d-md-none d-block" id="sidebarToggle">
-                <i class="fas fa-bars"></i> <!-- Ikon hamburger -->
+                <i class="fas fa-bars"></i>
             </button>
 
 

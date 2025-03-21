@@ -6,7 +6,6 @@
 <div class="container py-5">
     <h1 class="text-primary mb-4 text-center">Selamat Datang di FoodShare</h1>
     <div class="row g-4 justify-content-center">
-        <!-- Card Users (Hanya untuk admin) -->
         @auth
             @if (Auth::user()->role == 'admin')
                 <div class="col-md-4">
@@ -21,7 +20,6 @@
             @endif
         @endauth
 
-        <!-- Card Donasi -->
         <div class="col-md-4">
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-body text-center">
@@ -32,7 +30,6 @@
             </div>
         </div>
 
-        <!-- Card Klaim -->
         <div class="col-md-4">
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-body text-center">

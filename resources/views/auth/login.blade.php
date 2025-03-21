@@ -40,7 +40,6 @@
             transition: all 0.3s ease-in-out;
         }
 
-        /* Efek highlight */
         .btn-futuristic::before {
             content: '';
             position: absolute;
@@ -52,7 +51,6 @@
             transition: left 0.3s ease-in-out;
         }
 
-        /* Efek glow di bawah */
         .btn-futuristic::after {
             content: '';
             position: absolute;
@@ -65,10 +63,9 @@
             transition: width 0.3s ease-in-out;
         }
 
-        /* Hover Effect */
         .btn-futuristic:hover {
-            color: #ffd700; /* Warna emas saat hover */
-            transform: scale(1.05); /* Tombol sedikit membesar */
+            color: #ffd700;
+            transform: scale(1.05);
         }
 
         .btn-futuristic:hover::before {
@@ -76,7 +73,7 @@
         }
 
         .btn-futuristic:hover::after {
-            width: 80%; /* Glow bawah melebar */
+            width: 80%;
         }
     </style>
 </head>
@@ -87,7 +84,6 @@
         </button>
     </div>
 
-    <!-- Container untuk form login di tengah -->
     <div class="container d-flex justify-content-center align-items-center vh-100">
         <div class="row w-100 justify-content-center">
             <div class="col-12 col-md-6 col-lg-4">

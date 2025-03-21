@@ -9,7 +9,7 @@ class FonnteHelper
 {
     public static function sendMessage($target, $message)
     {
-        $token = env('FONNTE_TOKEN'); // Ambil token dari .env
+        $token = env('FONNTE_TOKEN');
 
         try {
             $response = Http::withHeaders([
@@ -17,7 +17,7 @@ class FonnteHelper
             ])->post('https://api.fonnte.com/send', [
                 'target' => $target,
                 'message' => $message,
-                'countryCode' => '62', // Opsional
+                'countryCode' => '62',
             ]);
 
             if ($response->successful()) {

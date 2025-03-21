@@ -30,7 +30,6 @@
                         <input type="text" name="location" class="form-control" required>
                     </div>
 
-                    {{-- Informasi waktu kadaluarsa otomatis --}}
                     <div class="mb-3">
                         <label class="form-label fw-bold">Waktu Kadaluarsa</label>
                         <p class="form-text text-muted">
@@ -41,8 +40,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Nama Donatur (kosongkan untuk Hamba Allah)</label>
                         <input type="text" name="donor_name" class="form-control" 
-                               placeholder="Masukkan nama atau kosongkan jika ingin anonim" 
-                               {{ auth()->check() ? 'disabled' : '' }}>
+                               placeholder="Masukkan nama atau kosongkan jika ingin anonim">
                     </div>
                     
                     <div class="mb-3">

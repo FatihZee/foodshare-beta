@@ -61,14 +61,12 @@ class ClaimController extends Controller
                 $donation->update(['status' => 'completed']);
             }
 
-            // Kirim pesan WA jika user punya nomor telepon
             $user = Auth::user();
             if ($user && $user->phone) {
                 $message = ClaimMessageHelper::generateClaimMessage($user, $donation, $queueNumber);
                 $sent = FonnteHelper::sendMessage($user->phone, $message);
 
                 if (!$sent) {
-                    // Jika gagal kirim, rollback transaksi agar makanan tidak berkurang
                     DB::rollBack();
                     return back()->with('error', 'Gagal mengirim notifikasi WhatsApp. Silakan coba lagi.');
                 }

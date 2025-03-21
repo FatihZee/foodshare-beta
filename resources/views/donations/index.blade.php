@@ -27,7 +27,7 @@
                                 <th>Lokasi</th>
                                 <th>Donatur</th>
                                 <th>Status</th>
-                                <th>Kadaluarsa</th> <!-- Tambahan Kolom Waktu Kedaluwarsa -->
+                                <th>Kadaluarsa</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -37,26 +37,21 @@
                                     <td>{{ $donation->food_name }}</td>
                                     <td>{{ $donation->quantity }}</td>
                                     <td>{{ $donation->location }}</td>
-                                    <td>
-                                        @if ($donation->donor_id)
-                                            {{ $donation->donor->name }}
-                                        @else
-                                            {{ $donation->donor_name }}
-                                        @endif
+                                    <td>{{ $donation->donor_name ?: 'Hamba Allah' }}
                                     </td>
                                     <td>
                                         <span class="badge bg-{{ $donation->status === 'pending' ? 'warning' : ($donation->status === 'approved' ? 'success' : 'danger') }}">
                                             {{ ucfirst($donation->status) }}
                                         </span>
                                     </td>
-                                    <td>{{ \Carbon\Carbon::parse($donation->expiration)->setTimezone('Asia/Jakarta')->translatedFormat('d M Y H:i') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($donation->expiration)->setTimezone('Asia/Jakarta')->translatedFormat('d M Y H:i:s') }}</td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-1">
                                             @if ($donation->maps)
                                                 <a href="{{ $donation->maps }}" target="_blank" class="btn btn-secondary btn-sm">Lihat Lokasi</a>
                                             @endif
                                             <a href="{{ route('donations.show', $donation) }}" class="btn btn-info btn-sm">Detail</a>
-                                            @if (Auth::id() === $donation->donor_id || auth()->user()->role === 'admin')
+                                            @if (Auth::check() && (Auth::id() === $donation->donor_id || auth()->user()->role === 'admin'))
                                                 <a href="{{ route('donations.edit', $donation) }}" class="btn btn-warning btn-sm">Edit</a>
                                                 <form action="{{ route('donations.destroy', $donation) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus donasi ini?');">
                                                     @csrf @method('DELETE')

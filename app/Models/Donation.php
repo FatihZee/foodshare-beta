@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Donation extends Model
 {
     protected $fillable = [
-        'donor_id', 'donor_name', 'food_name', 'quantity', 'location', 'expiration', 'maps',
-    ];    
+        'donor_id', 'donor_name', 'food_name', 'quantity', 
+        'location', 'expiration', 'status', 'maps'
+    ];   
 
     public function donor()
     {
