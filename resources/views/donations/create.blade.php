@@ -30,11 +30,14 @@
                         <input type="text" name="location" class="form-control" required>
                     </div>
 
+                    {{-- Informasi waktu kadaluarsa otomatis --}}
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Tanggal Kadaluarsa</label>
-                        <input type="datetime-local" name="expiration" class="form-control" required>
+                        <label class="form-label fw-bold">Waktu Kadaluarsa</label>
+                        <p class="form-text text-muted">
+                            Waktu kadaluarsa otomatis diatur <b>30 menit setelah donasi dibuat</b>.
+                        </p>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label class="form-label fw-bold">Nama Donatur (kosongkan untuk Hamba Allah)</label>
                         <input type="text" name="donor_name" class="form-control" 

@@ -14,7 +14,16 @@ class ClaimController extends Controller
 {
     public function index()
     {
-        $claims = Claim::with(['user', 'donation'])->get();
+        $user = auth()->user();
+
+        if ($user && $user->role === 'admin') {
+            $claims = Claim::with(['user', 'donation'])->get();
+        } elseif ($user) {
+            $claims = Claim::with(['user', 'donation'])->where('user_id', $user->id)->get();
+        } else {
+            $claims = collect();
+        }
+
         return view('claims.index', compact('claims'));
     }
 

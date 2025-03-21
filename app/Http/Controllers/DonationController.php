@@ -25,23 +25,22 @@ class DonationController extends Controller
             'food_name' => 'required|string|max:255',
             'quantity' => 'required|integer|min:1',
             'location' => 'required|string',
-            'expiration' => 'required|date|after:today',
             'donor_name' => 'nullable|string|max:255',
             'maps' => 'nullable|url', // Validasi untuk link Google Maps
         ]);
 
-        // Menyimpan donasi dengan link Google Maps
+        // Menyimpan donasi dengan waktu expired otomatis 30 menit ke depan
         Donation::create([
             'donor_id' => Auth::check() ? Auth::id() : null,
             'donor_name' => Auth::check() ? null : ($request->donor_name ?? 'Hamba Allah'),
             'food_name' => $request->food_name,
             'quantity' => $request->quantity,
             'location' => $request->location,
-            'expiration' => $request->expiration,
+            'expiration' => now()->addMinutes(30), // Set otomatis 30 menit ke depan
             'maps' => $request->maps, // Menyimpan link Google Maps
         ]);
 
-        return redirect()->route('donations.index')->with('success', 'Donasi berhasil ditambahkan!');
+        return redirect()->route('donations.index')->with('success', 'Donasi berhasil ditambahkan! Waktu kedaluwarsa otomatis diatur 30 menit ke depan.');
     }
 
     public function show(Donation $donation)
