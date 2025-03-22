@@ -24,8 +24,23 @@ class ClaimController extends Controller
             $claims = collect();
         }
 
-        return view('claims.index', compact('claims'));
+        // Hitung statistik klaim berdasarkan status
+        $pending = $claims->where('status', 'pending')->count();
+        $collected = $claims->where('status', 'collected')->count();
+        $cancelled = $claims->where('status', 'cancelled')->count();
+
+        // Ambil jumlah klaim per hari
+        $claimsPerDay = Claim::select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('COUNT(*) as total')
+            )
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
+
+        return view('claims.index', compact('claims', 'pending', 'collected', 'cancelled', 'claimsPerDay'));
     }
+
 
     public function create()
     {

@@ -1,116 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Login - FoodShare</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <style>
-        body {
-            display: flex;
-            height: 100vh;
-            align-items: center;
-            justify-content: center;
-            background: #f8f9fa;
-        }
-        .card {
-            border: none;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 1rem;
-            padding: 1.5rem;
-        }
-        .form-control {
-            background-color: #f1f3f5;
-            border: none;
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-        }
-        .btn-futuristic {
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(135deg, #007bff, #6610f2);
-            color: white;
-            border: none;
-            padding: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .btn-futuristic::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.2);
-            transition: left 0.3s ease-in-out;
-        }
-
-        .btn-futuristic::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 50%;
-            width: 30%;
-            height: 2px;
-            background: white;
-            transform: translateX(-50%);
-            transition: width 0.3s ease-in-out;
-        }
-
-        .btn-futuristic:hover {
-            color: #ffd700;
-            transform: scale(1.05);
-        }
-
-        .btn-futuristic:hover::before {
-            left: 0;
-        }
-
-        .btn-futuristic:hover::after {
-            width: 80%;
-        }
-    </style>
+	<title>Login - FoodShare</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" type="image/png" href="{{ asset('images/icons/favicon.ico') }}"/>
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('fonts/iconic/css/material-design-iconic-font.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/animate/animate.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/css-hamburgers/hamburgers.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/animsition/css/animsition.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/select2/select2.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/daterangepicker/daterangepicker.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/util.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/main.css') }}">
+	<style>
+		.home-btn {
+			position: fixed;
+			top: 20px;
+			left: 20px;
+			z-index: 1000;
+			background-color: rgba(255, 255, 255, 0.8);
+			border-radius: 50%;
+			width: 50px;
+			height: 50px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+			transition: all 0.3s ease;
+		}
+		.home-btn:hover {
+			background-color: #fff;
+			transform: scale(1.1);
+			box-shadow: 0 3px 7px rgba(0,0,0,0.3);
+		}
+		.home-btn i {
+			font-size: 24px;
+			color: #333;
+		}
+	</style>
 </head>
 <body>
-    <div class="position-absolute top-0 start-0 m-3">
-        <button onclick="window.location.href='{{ route('home') }}'" class="btn-futuristic">
-            Home
-        </button>
-    </div>
+	
+	<!-- Home button outside the login container -->
+	<a href="{{ route('home') }}" class="home-btn">
+		<i class="fa fa-home"></i>
+	</a>
+	
+	<div class="limiter">
+		<div class="container-login100" style="background-image: url('{{ asset('images/bg-01.jpg') }}');">
+			<div class="wrap-login100">
+				<form class="login100-form validate-form" method="POST" action="{{ route('login') }}">
+					@csrf
+					<span class="login100-form-logo">
+						<i class="zmdi zmdi-landscape"></i>
+					</span>
 
-    <div class="container d-flex justify-content-center align-items-center vh-100">
-        <div class="row w-100 justify-content-center">
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card shadow-lg">
-                    <div class="card-body">
-                        <h1 class="fs-4 text-center mb-3">Login</h1>
-                        <form method="POST" action="{{ route('login') }}">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" id="email" name="email" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" id="password" name="password" class="form-control" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100 py-2 mt-2">Login</button>
-                            <div class="text-center mt-2">
-                                <a href="{{ route('register') }}" class="text-decoration-none">Belum punya akun? Daftar</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+					<span class="login100-form-title p-b-34 p-t-27">
+						Log in
+					</span>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+					<div class="wrap-input100 validate-input" data-validate = "Enter email">
+						<input class="input100" type="email" name="email" placeholder="Email" required>
+						<span class="focus-input100" data-placeholder="&#xf207;"></span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate="Enter password">
+						<input class="input100" type="password" name="password" placeholder="Password" required>
+						<span class="focus-input100" data-placeholder="&#xf191;"></span>
+					</div>
+
+					<div class="container-login100-form-btn">
+						<button type="submit" class="login100-form-btn">
+							Login
+						</button>
+					</div>
+
+					<div class="text-center p-t-10">
+						<a class="txt1" href="{{ route('register') }}">
+							Belum punya akun? Daftar
+						</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<script src="{{ asset('vendor/jquery/jquery-3.2.1.min.js') }}"></script>
+	<script src="{{ asset('vendor/animsition/js/animsition.min.js') }}"></script>
+	<script src="{{ asset('vendor/bootstrap/js/popper.js') }}"></script>
+	<script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+	<script src="{{ asset('vendor/select2/select2.min.js') }}"></script>
+	<script src="{{ asset('vendor/daterangepicker/moment.min.js') }}"></script>
+	<script src="{{ asset('vendor/daterangepicker/daterangepicker.js') }}"></script>
+	<script src="{{ asset('vendor/countdowntime/countdowntime.js') }}"></script>
+	<script src="{{ asset('js/main.js') }}"></script>
+
 </body>
 </html>

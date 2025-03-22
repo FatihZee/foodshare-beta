@@ -39,13 +39,14 @@
             background: white;
             box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            height: 100vh;
             position: fixed;
             top: 70px;
             left: 0;
-            z-index: 999;
-            transition: left 0.3s ease;
             z-index: 998;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            bottom: 40px; /* Adjust this value to match your footer height */
+            height: auto; /* Remove the fixed height */
         }
 
         .sidebar a {
@@ -59,14 +60,16 @@
         }
 
         .sidebar a:hover {
-            background: #e9ecef;
+            background: #2470db;
+            color: white;
         }
 
         .content {
             margin-left: 260px;
             margin-top: 70px;
             padding: 20px;
-            min-height: 100vh;
+            min-height: calc(100vh - 110px); /* Adjust for navbar and footer heights */
+            padding-bottom: 50px; /* Add padding at the bottom to prevent content from being hidden behind footer */
         }
 
         .footer {
@@ -74,7 +77,11 @@
             text-align: center;
             padding: 10px;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            position: relative;
+            position: fixed; /* Make footer fixed */
+            bottom: 0;
+            width: 100%;
+            height: 40px; /* Define a fixed height */
+            z-index: 999; /* Ensure it stays above other content */
         }
 
         .container-fluid {
@@ -87,6 +94,7 @@
                 width: 200px;
                 top: 70px;
                 left: -200px;
+                bottom: 40px;
             }
 
             .sidebar.active {
@@ -95,7 +103,7 @@
 
             .content {
                 margin-left: 0;
-                margin-top: 70px;
+                min-height: calc(100vh - 110px);
             }
 
             .navbar {
@@ -124,6 +132,7 @@
                 width: 100%;
                 left: -100%;
                 top: 70px;
+                bottom: 40px;
             }
 
             .sidebar.active {
@@ -187,7 +196,6 @@
                 <i class="fas fa-bars"></i>
             </button>
 
-
             <div>
                 @auth
                     <div class="dropdown">
@@ -203,7 +211,7 @@
                         </ul>
                     </div>
                 @else
-                    <a href="{{ route('login') }}" class="btn btn-primary">Login</a>
+                <a href="{{ route('login') }}" class="btn btn-primary" style="color: white; display: flex; justify-content: center; align-items: center;">Login</a>
                 @endauth
             </div>
         </div>

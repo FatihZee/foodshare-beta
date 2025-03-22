@@ -10,8 +10,21 @@ class DonationController extends Controller
 {
     public function index()
     {
-        $donations = Donation::with('donor')->get();
-        return view('donations.index', compact('donations'));
+        // Menghitung jumlah donasi berdasarkan status
+        $available = Donation::where('status', 'available')->count();
+        $claimed = Donation::where('status', 'claimed')->count();
+        $completed = Donation::where('status', 'completed')->count();
+
+        // Mengambil data jumlah donasi per hari
+        $donationsPerDay = Donation::selectRaw('DATE(created_at) as date, COUNT(*) as total')
+            ->groupBy('date')
+            ->orderBy('date', 'ASC')
+            ->get();
+
+        // Mengambil semua donasi untuk ditampilkan di tabel
+        $donations = Donation::all();
+
+        return view('donations.index', compact('donations', 'available', 'claimed', 'completed', 'donationsPerDay'));
     }
 
     public function create()
