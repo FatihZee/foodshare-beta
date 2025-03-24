@@ -174,6 +174,10 @@
                 <i class="fas fa-receipt fa-fw"></i>
                 <span>Klaim</span>
             </a>
+            <a href="{{ route('reviews.index') }}">
+                <i class="fas fa-star fa-fw"></i>
+                <span>Review</span>
+            </a>
         @else
             <a href="{{ route('donations.index') }}">
                 <i class="fas fa-hand-holding-heart fa-fw"></i>
@@ -183,7 +187,12 @@
                 <i class="fas fa-receipt fa-fw"></i>
                 <span>Klaim</span>
             </a>
+            <a href="{{ route('reviews.index') }}">
+                <i class="fas fa-star fa-fw"></i>
+                <span>Review</span>
+            </a>
         @endauth
+
     </div>
 
     <div class="d-flex flex-column w-100">

@@ -24,7 +24,9 @@
                             </select>
                         </div>
 
-                        <button type="submit" class="btn btn-success w-100 py-2 mt-3">Klaim</button>
+                        <button type="submit" class="btn btn-success w-100 py-2 mt-3">
+                            <i class="fas fa-check-circle me-1"></i> Klaim
+                        </button>
                     </form>
                 </div>
             </div>

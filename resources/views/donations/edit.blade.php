@@ -43,8 +43,12 @@
                     </div>
 
                     <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary">Update</button>
-                        <a href="{{ route('donations.index') }}" class="btn btn-secondary ms-2">Batal</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> Update
+                        </button>
+                        <a href="{{ route('donations.index') }}" class="btn btn-secondary ms-2">
+                            <i class="fas fa-times me-1"></i> Batal
+                        </a>
                     </div>
                 </form>
             </div>
