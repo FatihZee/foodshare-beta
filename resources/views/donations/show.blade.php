@@ -18,6 +18,11 @@
                     <h5 class="fw-bold">Nama Makanan:</h5>
                     <p class="card-text">{{ $donation->food_name }}</p>
                 </div>
+                
+                <div class="mb-3">
+                    <h5 class="fw-bold">Kategori:</h5>
+                    <p class="card-text">{{ $donation->category->name }}</p>
+                </div>
 
                 <div class="mb-3">
                     <h5 class="fw-bold">Jumlah:</h5>

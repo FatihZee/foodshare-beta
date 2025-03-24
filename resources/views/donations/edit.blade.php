@@ -23,6 +23,17 @@
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label fw-bold">Kategori Makanan</label>
+                        <select name="category_id" class="form-control" required>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ $donation->category_id == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label fw-bold">Jumlah</label>
                         <input type="number" name="quantity" class="form-control" value="{{ $donation->quantity }}" required min="1">
                     </div>

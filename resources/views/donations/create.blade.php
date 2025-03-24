@@ -19,7 +19,17 @@
                         <label class="form-label fw-bold">Nama Makanan</label>
                         <input type="text" name="food_name" class="form-control" required>
                     </div>
-
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Kategori Makanan</label>
+                        <select name="category_id" class="form-select">
+                            <option value="">Pilih Kategori</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
                     <div class="mb-3">
                         <label class="form-label fw-bold">Jumlah</label>
                         <input type="number" name="quantity" class="form-control" required min="1">

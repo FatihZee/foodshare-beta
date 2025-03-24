@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Donation;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Helpers\FonnteHelper;
 use Illuminate\Support\Facades\DB;
@@ -22,14 +23,15 @@ class DonationController extends Controller
             ->orderBy('date', 'ASC')
             ->get();
 
-        $donations = Donation::all();
+        $donations = Donation::with('category')->get();
 
         return view('donations.index', compact('donations', 'available', 'claimed', 'completed', 'donationsPerDay'));
     }
 
     public function create()
     {
-        return view('donations.create');
+        $categories = Category::all();
+        return view('donations.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -40,6 +42,7 @@ class DonationController extends Controller
             'location' => 'required|string',
             'donor_name' => 'nullable|string|max:255',
             'maps' => 'nullable|url',
+            'category_id' => 'nullable|exists:categories,id',
         ]);
 
         DB::beginTransaction();
@@ -53,7 +56,8 @@ class DonationController extends Controller
                 'location' => $request->location,
                 'expiration' => now()->addMinutes(30),
                 'maps' => $request->maps,
-                'status' => 'available'
+                'status' => 'available',
+                'category_id' => $request->category_id,
             ]);
 
             if ($donor && $donor->phone) {
@@ -79,7 +83,8 @@ class DonationController extends Controller
         if (Auth::id() !== $donation->donor_id) {
             abort(403, 'Unauthorized');
         }
-        return view('donations.edit', compact('donation'));
+        $categories = Category::all();
+        return view('donations.edit', compact('donation', 'categories'));
     }
 
     public function update(Request $request, Donation $donation)
@@ -94,9 +99,10 @@ class DonationController extends Controller
             'location' => 'required|string',
             'expiration' => 'required|date|after:today',
             'maps' => 'nullable|url',
+            'category_id' => 'nullable|exists:categories,id',
         ]);
 
-        $donation->update($request->only('food_name', 'quantity', 'location', 'expiration', 'status', 'maps'));
+        $donation->update($request->only('food_name', 'quantity', 'location', 'expiration', 'status', 'maps', 'category_id'));
         return redirect()->route('donations.index')->with('success', 'Donasi berhasil diupdate!');
     }
 
@@ -108,6 +114,5 @@ class DonationController extends Controller
 
         $donation->delete();
         return redirect()->route('donations.index')->with('success', 'Donasi berhasil dihapus!');
-}
-
+    }
 }

@@ -80,6 +80,7 @@
                         <thead class="table-dark">
                             <tr class="text-center">
                                 <th>Nama Makanan</th>
+                                <th>Kategori</th>
                                 <th>Jumlah</th>
                                 <th>Lokasi</th>
                                 <th>Donatur</th>
@@ -92,6 +93,7 @@
                             @foreach ($donations as $donation)
                                 <tr class="text-center">
                                     <td>{{ $donation->food_name }}</td>
+                                    <td>{{ optional($donation->category)->name ?: 'Tidak Ada Kategori' }}</td>
                                     <td>{{ $donation->quantity }}</td>
                                     <td>{{ $donation->location }}</td>
                                     <td>{{ $donation->donor_name ?: 'Hamba Allah' }}</td>
@@ -105,20 +107,53 @@
                                     </td>                                    
                                     <td>{{ \Carbon\Carbon::parse($donation->expiration)->setTimezone('Asia/Jakarta')->translatedFormat('d M Y H:i:s') }}</td>
                                     <td>
-                                        <div class="d-flex justify-content-center gap-1">
+                                        <div class="d-flex flex-wrap gap-1 justify-content-center">
                                             @if ($donation->maps)
-                                                <a href="{{ $donation->maps }}" target="_blank" class="btn btn-secondary btn-sm">Lihat Lokasi</a>
+                                                <a href="{{ $donation->maps }}" target="_blank" class="btn btn-secondary btn-sm px-2" title="Lihat Lokasi">
+                                                    <i class="fas fa-map-marker-alt"></i>
+                                                </a>
                                             @endif
-                                            <a href="{{ route('donations.show', $donation) }}" class="btn btn-info btn-sm">Detail</a>
+                                            <a href="{{ route('donations.show', $donation) }}" class="btn btn-info btn-sm px-2" title="Detail">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                    
+                                            @auth
+                                                @php
+                                                    $wishlistItem = auth()->user()->wishlist()->where('donation_id', $donation->id)->exists();
+                                                @endphp
+                                    
+                                                @if ($wishlistItem)
+                                                    <form action="{{ route('wishlist.destroy', $donation->id) }}" method="POST" class="d-inline">
+                                                        @csrf @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm px-2" title="Hapus dari Wishlist">
+                                                            <i class="fas fa-heart-broken"></i>
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <form action="{{ route('wishlist.store') }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        <input type="hidden" name="donation_id" value="{{ $donation->id }}">
+                                                        <button type="submit" class="btn btn-warning btn-sm px-2" title="Tambah ke Wishlist">
+                                                            <i class="fas fa-heart"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            @endauth
+                                    
                                             @if (Auth::check() && (Auth::id() === $donation->donor_id || auth()->user()->role === 'admin'))
-                                                <a href="{{ route('donations.edit', $donation) }}" class="btn btn-warning btn-sm">Edit</a>
+                                                <a href="{{ route('donations.edit', $donation) }}" class="btn btn-warning btn-sm px-2" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
                                                 <form action="{{ route('donations.destroy', $donation) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus donasi ini?');">
                                                     @csrf @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                                    <button type="submit" class="btn btn-danger btn-sm px-2" title="Hapus">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
                                                 </form>
                                             @endif
                                         </div>
-                                    </td>                                                                     
+                                    </td>                                                                      
+                                                                                                                                         
                                 </tr>
                             @endforeach
                         </tbody>
@@ -143,7 +178,7 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false, // Memastikan tinggi bisa disesuaikan
+                maintainAspectRatio: false,
             }
         });
 
@@ -160,7 +195,7 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false, // Memastikan tinggi bisa disesuaikan
+                maintainAspectRatio: false,
                 scales: {
                     y: { beginAtZero: true }
                 }

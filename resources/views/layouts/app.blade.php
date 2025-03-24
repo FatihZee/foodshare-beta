@@ -166,6 +166,10 @@
                     <span>Users</span>
                 </a>
             @endif
+            <a href="{{ route('categories.index') }}">
+                <i class="fas fa-list-alt fa-fw"></i>
+                <span>Kategori Makanan</span>
+            </a>
             <a href="{{ route('donations.index') }}">
                 <i class="fas fa-hand-holding-heart fa-fw"></i>
                 <span>Donasi</span>
@@ -177,8 +181,16 @@
             <a href="{{ route('reviews.index') }}">
                 <i class="fas fa-star fa-fw"></i>
                 <span>Review</span>
+            </a>
+            <a href="{{ route('wishlist.index') }}">
+                <i class="fas fa-heart fa-fw"></i>
+                <span>Wishlist</span>
             </a>
         @else
+            <a href="{{ route('categories.index') }}">
+                <i class="fas fa-list-alt fa-fw"></i>
+                <span>Kategori Makanan</span>
+            </a>
             <a href="{{ route('donations.index') }}">
                 <i class="fas fa-hand-holding-heart fa-fw"></i>
                 <span>Donasi</span>
@@ -191,9 +203,12 @@
                 <i class="fas fa-star fa-fw"></i>
                 <span>Review</span>
             </a>
+            <a href="{{ route('wishlist.index') }}">
+                <i class="fas fa-heart fa-fw"></i>
+                <span>Wishlist</span>
+            </a>
         @endauth
-
-    </div>
+    </div>    
 
     <div class="d-flex flex-column w-100">
         <div class="navbar d-flex justify-content-between align-items-center">

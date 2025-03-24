@@ -16,4 +16,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
     ];
+    
+    public function wishlist()
+    {
+        return $this->belongsToMany(Donation::class, 'wishlists');
+    }
+
 }

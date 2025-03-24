@@ -24,4 +24,16 @@ class Donation extends Model
             $this->update(['status' => 'completed']);
         }
     }
+    
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+    
+    public function wishlistedBy()
+    {
+        return $this->belongsToMany(User::class, 'wishlists');
+    }
+
+
 }
