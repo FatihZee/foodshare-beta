@@ -8,6 +8,13 @@
             <div class="card-body p-4">
                 <h1 class="text-center mb-4">Detail Pengguna</h1>
                 
+                <div class="mb-3 text-center">
+                    <img src="{{ $user->profilePicture ? $user->profilePicture : asset('path/to/default-image.jpg') }}" 
+                         alt="Profile Picture" 
+                         class="rounded-circle" 
+                         style="width: 150px; height: 150px; object-fit: cover;">
+                </div>
+
                 <div class="mb-3">
                     <h5 class="fw-bold">Nama:</h5>
                     <p class="card-text">{{ $user->name }}</p>

@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Routing\Controller;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class UserController extends Controller
 {
@@ -44,7 +45,17 @@ class UserController extends Controller
             'password' => 'nullable|min:6',
             'role' => 'required|in:admin,donatur,user,sr',
             'phone' => 'nullable|string|max:20',
+            'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        $profilePicture = null;
+        if ($request->hasFile('profilePicture')) {
+            $uploadedFile = Cloudinary::uploadApi()->upload(
+                $request->file('profilePicture')->getRealPath(),
+                ['folder' => 'user_profile_images']
+            );
+            $profilePicture = $uploadedFile['secure_url'];
+        }
 
         User::create([
             'name' => $request->name ?? 'Guest User',
@@ -52,6 +63,7 @@ class UserController extends Controller
             'password' => $request->password ? Hash::make($request->password) : null,
             'role' => $request->role,
             'phone' => $request->phone,
+            'profilePicture' => $profilePicture,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User berhasil dibuat.');
@@ -87,6 +99,7 @@ class UserController extends Controller
             'password' => 'nullable|min:6',
             'phone' => 'nullable|string|max:20',
             'role' => 'nullable|in:admin,donatur,user,sr',
+            'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $updateData = [
@@ -100,6 +113,19 @@ class UserController extends Controller
             $updateData['role'] = $request->role;
         }
 
+        if ($request->hasFile('profilePicture')) {
+            if ($user->profilePicture) {
+                $publicId = pathinfo(parse_url($user->profilePicture, PHP_URL_PATH), PATHINFO_FILENAME);
+                Cloudinary::uploadApi()->destroy($publicId);
+            }
+
+            $uploadedFile = Cloudinary::uploadApi()->upload(
+                $request->file('profilePicture')->getRealPath(),
+                ['folder' => 'user_profile_images']
+            );
+            $updateData['profilePicture'] = $uploadedFile['secure_url'];
+        }
+
         $user->update($updateData);
 
         return redirect()->route('users.index')->with('success', 'Data berhasil diperbarui.');
@@ -107,7 +133,17 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('users.index')->with('error', 'Anda tidak memiliki izin.');
+        }
+
+        if ($user->profilePicture) {
+            $publicId = pathinfo(parse_url($user->profilePicture, PHP_URL_PATH), PATHINFO_FILENAME);
+            Cloudinary::uploadApi()->destroy($publicId, ['invalidate' => true]);
+        }
+
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
     }
+
 }

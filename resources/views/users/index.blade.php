@@ -20,6 +20,7 @@
                     <table class="table table-striped table-bordered">
                         <thead class="table-dark">
                             <tr class="text-center">
+                                <th>Foto Profil</th>
                                 <th>Nama</th>
                                 <th>Email</th>
                                 <th>Role</th>
@@ -29,6 +30,9 @@
                         <tbody>
                             @foreach ($users as $user)
                                 <tr class="text-center">
+                                    <td>
+                                        <img src="{{ $user->profilePicture ?? 'https://via.placeholder.com/50' }}" alt="Foto Profil" class="rounded-circle" width="50" height="50">
+                                    </td>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email ?? 'Guest' }}</td>
                                     <td>{{ ucfirst($user->role) }}</td>

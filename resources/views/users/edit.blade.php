@@ -13,7 +13,7 @@
         <div class="card shadow-lg border-0">
             <div class="card-body p-4">
                 <h1 class="text-center mb-4">Edit Pengguna</h1>
-                <form method="POST" action="{{ route('users.update', $user) }}">
+                <form method="POST" action="{{ route('users.update', $user) }}" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     
@@ -45,6 +45,11 @@
                     <div class="mb-3">
                         <label class="form-label">No. HP</label>
                         <input type="text" name="phone" class="form-control" value="{{ $user->phone }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Foto Profil (Opsional)</label>
+                        <input type="file" name="profilePicture" class="form-control" accept="image/*">
                     </div>
 
                     <div class="d-flex justify-content-end">

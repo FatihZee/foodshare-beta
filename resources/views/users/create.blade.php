@@ -13,21 +13,21 @@
         <div class="card shadow-lg border-0">
             <div class="card-body p-4">
                 <h1 class="text-center mb-4">Tambah Pengguna</h1>
-                <form method="POST" action="{{ route('users.store') }}">
+                <form method="POST" action="{{ route('users.store') }}" enctype="multipart/form-data">
                     @csrf
                     
                     <div class="mb-3">
-                        <label class="form-label">Nama (Opsional)</label>
+                        <label class="form-label">Nama</label>
                         <input type="text" name="name" class="form-control">
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Email (Opsional)</label>
+                        <label class="form-label">Email</label>
                         <input type="email" name="email" class="form-control">
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Password (Opsional)</label>
+                        <label class="form-label">Password</label>
                         <input type="password" name="password" class="form-control">
                     </div>
 
@@ -44,6 +44,11 @@
                     <div class="mb-3">
                         <label class="form-label">No. HP (Opsional)</label>
                         <input type="text" name="phone" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Foto Profil (Opsional)</label>
+                        <input type="file" name="profilePicture" class="form-control">
                     </div>
 
                     <div class="d-flex justify-content-end">

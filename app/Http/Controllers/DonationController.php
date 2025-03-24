@@ -4,24 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\Donation;
 use Illuminate\Http\Request;
+use App\Helpers\FonnteHelper;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\DonationMessageHelper;
 
 class DonationController extends Controller
 {
     public function index()
     {
-        // Menghitung jumlah donasi berdasarkan status
         $available = Donation::where('status', 'available')->count();
         $claimed = Donation::where('status', 'claimed')->count();
         $completed = Donation::where('status', 'completed')->count();
 
-        // Mengambil data jumlah donasi per hari
         $donationsPerDay = Donation::selectRaw('DATE(created_at) as date, COUNT(*) as total')
             ->groupBy('date')
             ->orderBy('date', 'ASC')
             ->get();
 
-        // Mengambil semua donasi untuk ditampilkan di tabel
         $donations = Donation::all();
 
         return view('donations.index', compact('donations', 'available', 'claimed', 'completed', 'donationsPerDay'));
@@ -42,18 +42,31 @@ class DonationController extends Controller
             'maps' => 'nullable|url',
         ]);
 
-        Donation::create([
-            'donor_id' => Auth::check() ? Auth::id() : null,
-            'donor_name' => $request->donor_name ?: 'Hamba Allah',
-            'food_name' => $request->food_name,
-            'quantity' => $request->quantity,
-            'location' => $request->location,
-            'expiration' => now()->addMinutes(30),
-            'maps' => $request->maps,
-            'status' => 'available'
-        ]);
+        DB::beginTransaction();
+        try {
+            $donor = Auth::user();
+            $donation = Donation::create([
+                'donor_id' => $donor ? $donor->id : null,
+                'donor_name' => $request->donor_name ?: ($donor ? $donor->name : 'Hamba Allah'),
+                'food_name' => $request->food_name,
+                'quantity' => $request->quantity,
+                'location' => $request->location,
+                'expiration' => now()->addMinutes(30),
+                'maps' => $request->maps,
+                'status' => 'available'
+            ]);
 
-        return redirect()->route('donations.index')->with('success', 'Donasi berhasil ditambahkan! Waktu kedaluwarsa otomatis diatur 30 menit ke depan.');
+            if ($donor && $donor->phone) {
+                $message = DonationMessageHelper::generateDonationMessage($donation);
+                FonnteHelper::sendMessage($donor->phone, $message);
+            }
+
+            DB::commit();
+            return redirect()->route('donations.index')->with('success', 'Donasi berhasil ditambahkan dan notifikasi WhatsApp dikirim!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 
     public function show(Donation $donation)
