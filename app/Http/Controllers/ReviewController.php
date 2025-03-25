@@ -79,14 +79,11 @@ class ReviewController extends Controller
 
         if ($request->hasFile('photo')) {
             if ($review->photo) {
-                // Ambil hanya public ID tanpa ekstensi
                 $publicId = pathinfo(parse_url($review->photo, PHP_URL_PATH), PATHINFO_FILENAME);
         
-                // Hapus dari Cloudinary
                 Cloudinary::uploadApi()->destroy($publicId);
             }
         
-            // Upload foto baru
             $uploadedFile = Cloudinary::uploadApi()->upload(
                 $request->file('photo')->getRealPath(),
                 ['folder' => 'rating-photo']

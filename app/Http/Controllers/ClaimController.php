@@ -44,12 +44,11 @@ class ClaimController extends Controller
 
     public function create()
     {
-        $userId = auth()->id(); // Ambil ID user yang login
+        $userId = auth()->id();
 
-        // Ambil semua donasi yang tersedia dan cek apakah user sudah klaim
         $donations = Donation::where('status', 'available')
             ->with(['claims' => function ($query) use ($userId) {
-                $query->where('user_id', $userId)->latest(); // Ambil klaim terbaru user
+                $query->where('user_id', $userId)->latest();
             }])
             ->get();
 
@@ -61,6 +60,8 @@ class ClaimController extends Controller
     {
         $request->validate([
             'donation_id' => 'required|exists:donations,id',
+            'name' => auth()->check() ? 'nullable' : 'required|string|max:255',
+            'phone' => auth()->check() ? 'nullable' : 'required|string|max:15',
         ]);
 
         DB::beginTransaction();
@@ -73,8 +74,14 @@ class ClaimController extends Controller
 
             $queueNumber = Claim::where('donation_id', $donation->id)->count() + 1;
 
+            $userId = auth()->id();
+            $name = auth()->check() ? auth()->user()->name : $request->name;
+            $phone = auth()->check() ? auth()->user()->phone : $request->phone;
+
             $claim = Claim::create([
-                'user_id' => Auth::id(),
+                'user_id' => $userId,
+                'name' => $name,
+                'phone' => $phone,
                 'donation_id' => $donation->id,
                 'queue_number' => $queueNumber,
             ]);
@@ -85,10 +92,9 @@ class ClaimController extends Controller
                 $donation->update(['status' => 'completed']);
             }
 
-            $user = Auth::user();
-            if ($user && $user->phone) {
-                $message = ClaimMessageHelper::generateClaimMessage($user, $donation, $queueNumber);
-                $sent = FonnteHelper::sendMessage($user->phone, $message);
+            if ($phone) {
+                $message = ClaimMessageHelper::generateClaimMessage($name, $donation, $queueNumber);
+                $sent = FonnteHelper::sendMessage($phone, $message);
 
                 if (!$sent) {
                     DB::rollBack();
@@ -103,6 +109,7 @@ class ClaimController extends Controller
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
+
 
     public function show(Claim $claim)
     {
@@ -132,7 +139,7 @@ class ClaimController extends Controller
     {
         Log::info('Current User ID: ' . Auth::id());
         Log::info('Donation User ID: ' . $donation->user_id);
-        // Pastikan hanya donor yang bisa melihat klaimnya sendiri
+
         if (Auth::id() !== $donation->donor_id) {
             return redirect()->route('home')->with('error', 'Anda tidak memiliki akses ke donasi ini.');
         }
@@ -143,7 +150,6 @@ class ClaimController extends Controller
     
     public function approve(Claim $claim)
     {
-        // Pastikan user hanya bisa menyetujui klaim donasinya sendiri
         if (Auth::id() !== $claim->donation->donor_id) {
             return redirect()->route('home')->with('error', 'Anda tidak memiliki akses untuk menyetujui klaim ini.');
         }
@@ -151,6 +157,14 @@ class ClaimController extends Controller
         $claim->update(['status' => 'collected']);
         return back()->with('success', 'Klaim telah disetujui!');
     }
+    
+    public function reject(Claim $claim)
+    {
+        if (Auth::id() !== $claim->donation->donor_id) {
+            return redirect()->route('home')->with('error', 'Anda tidak memiliki akses untuk menolak klaim ini.');
+        }
 
-
+        $claim->update(['status' => 'cancelled']);
+        return back()->with('success', 'Klaim telah ditolak.');
+    }
 }

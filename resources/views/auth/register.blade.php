@@ -44,7 +44,6 @@
 </head>
 <body>
 	
-	<!-- Home button outside the register container -->
 	<a href="{{ route('home') }}" class="home-btn">
 		<i class="fa fa-home"></i>
 	</a>
@@ -88,7 +87,7 @@
                         </button>
                     </div>
                     
-                    <div class="text-center p-t-10"> <!-- Mengurangi jarak -->
+                    <div class="text-center p-t-10">
                         <a class="txt1" href="{{ route('login') }}">
                             Sudah punya akun? Login
                         </a>

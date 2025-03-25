@@ -27,7 +27,7 @@
             @foreach ($claims as $index => $claim)
             <tr>
                 <td>{{ $index + 1 }}</td>
-                <td>{{ $claim->user->name }}</td>
+                <td>{{ $claim->user->name ?? $claim->name }}</td>
                 <td>
                     <span class="badge {{ $claim->status == 'collected' ? 'bg-success' : 'bg-warning' }}">
                         {{ ucfirst($claim->status) }}
@@ -35,18 +35,25 @@
                 </td>
                 <td>
                     @if ($claim->status === 'pending')
-                        <form method="POST" action="{{ route('claims.approve', $claim->id) }}">
+                        <form method="POST" action="{{ route('claims.approve', $claim->id) }}" class="d-inline">
                             @csrf
                             <button type="submit" class="btn btn-success btn-sm">
                                 <i class="fas fa-check-circle"></i> Setujui
                             </button>
                         </form>
+                
+                        <form method="POST" action="{{ route('claims.reject', $claim->id) }}" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fas fa-times-circle"></i> Tolak
+                            </button>
+                        </form>
                     @else
                         <button class="btn btn-secondary btn-sm" disabled>
-                            <i class="fas fa-check-circle"></i> Sudah Diambil
+                            <i class="fas fa-check-circle"></i> {{ ucfirst($claim->status) }}
                         </button>
                     @endif
-                </td>
+                </td>                
             </tr>
             @endforeach
         </tbody>

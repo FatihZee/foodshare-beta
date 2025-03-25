@@ -44,7 +44,6 @@
 </head>
 <body>
 	
-	<!-- Home button outside the login container -->
 	<a href="{{ route('home') }}" class="home-btn">
 		<i class="fa fa-home"></i>
 	</a>

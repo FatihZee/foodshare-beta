@@ -14,7 +14,6 @@
             @csrf
             @method('PUT')
 
-            <!-- Rating -->
             <div class="mb-3">
                 <label class="form-label fw-bold">Rating</label>
                 <div class="rating-stars">
@@ -26,13 +25,11 @@
                 <input type="hidden" name="rating" id="ratingInput" value="{{ $review->rating }}">
             </div>
 
-            <!-- Komentar -->
             <div class="mb-3">
                 <label for="comment" class="form-label fw-bold">Komentar</label>
                 <textarea name="comment" id="comment" class="form-control" rows="4" required>{{ $review->comment }}</textarea>
             </div>
 
-            <!-- Foto Review -->
             <div class="mb-3">
                 <label class="form-label fw-bold">Foto Review</label>
                 <input type="file" name="photo" class="form-control" accept="image/*" onchange="previewImage(event)">
@@ -43,7 +40,6 @@
                 @endif
             </div>
 
-            <!-- Tombol Submit -->
             <button type="submit" class="btn btn-success">
                 <i class="fas fa-save"></i> Simpan Perubahan
             </button>
@@ -51,7 +47,6 @@
     </div>
 </div>
 
-<!-- Script untuk bintang rating dan preview gambar -->
 <script>
     document.querySelectorAll('.rating-star').forEach(star => {
         star.addEventListener('click', function () {

@@ -10,7 +10,6 @@
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
-        {{-- Statistik Klaim --}}
         <div class="row mb-4">
             <div class="col-md-4">
                 <div class="card text-white bg-warning shadow-sm">
@@ -38,7 +37,6 @@
             </div>
         </div>
 
-        {{-- Grafik Statistik --}}
         <div class="row mb-4">
             <div class="col-md-6 d-flex align-items-center">
                 <div class="card w-100 shadow-sm">
@@ -58,15 +56,13 @@
             </div>
         </div>
 
-        {{-- CSS untuk Chart --}}
         <style>
             .chart-canvas {
                 max-width: 100%;
-                height: 300px !important; /* Ukuran chart agar seimbang */
+                height: 300px !important;
             }
         </style>
 
-        {{-- Tabel Klaim --}}
         <div class="card shadow-lg border-0">
             <div class="card-body p-4">
                 <h1 class="text-center mb-4">Daftar Klaim</h1>
@@ -111,7 +107,6 @@
         </div>
     </div>
 
-    {{-- Chart.js untuk Statistik --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         var ctxPie = document.getElementById('claimChart').getContext('2d');

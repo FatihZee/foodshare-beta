@@ -10,7 +10,6 @@
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
-        {{-- Statistik Donasi --}}
         <div class="row mb-4">
             <div class="col-md-4">
                 <div class="card text-white bg-primary shadow-sm">
@@ -38,7 +37,6 @@
             </div>
         </div>
 
-        {{-- Grafik Statistik --}}
         <div class="row mb-4">
             <div class="col-md-6 d-flex align-items-center">
                 <div class="card w-100 shadow-sm">
@@ -58,15 +56,13 @@
             </div>
         </div>
         
-        {{-- CSS untuk menyesuaikan ukuran chart --}}
         <style>
             .chart-canvas {
                 max-width: 100%;
-                height: 300px !important; /* Sama tinggi untuk Pie dan Bar Chart */
+                height: 300px !important;
             }
         </style>
 
-        {{-- Tabel Daftar Donasi --}}
         <div class="card shadow-lg border-0">
             <div class="card-body p-4">
                 <h1 class="text-center mb-4">Daftar Donasi</h1>
@@ -77,7 +73,7 @@
 
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered">
-                        <thead class="table-dark">
+                        <thead class="table-dark text-center align-middle">
                             <tr class="text-center">
                                 <th>Nama Makanan</th>
                                 <th>Kategori</th>
@@ -89,7 +85,7 @@
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="text-center align-middle">
                             @foreach ($donations as $donation)
                                 <tr class="text-center">
                                     <td>{{ $donation->food_name }}</td>
@@ -107,7 +103,7 @@
                                     </td>                                    
                                     <td>{{ \Carbon\Carbon::parse($donation->expiration)->setTimezone('Asia/Jakarta')->translatedFormat('d M Y H:i:s') }}</td>
                                     <td>
-                                        <div class="d-flex flex-wrap gap-1 justify-content-center">
+                                        <div class="d-flex flex-nowrap justify-content-center gap-1">
                                             @if ($donation->maps)
                                                 <a href="{{ $donation->maps }}" target="_blank" class="btn btn-secondary btn-sm px-2" title="Lihat Lokasi">
                                                     <i class="fas fa-map-marker-alt"></i>
@@ -116,7 +112,6 @@
                                             <a href="{{ route('donations.show', $donation) }}" class="btn btn-info btn-sm px-2" title="Detail">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                    
                                             <a href="{{ route('donations.claims', $donation->id) }}" class="btn btn-primary btn-sm px-2" title="Lihat Klaim">
                                                 <i class="fas fa-users"></i>
                                             </a>
@@ -156,9 +151,7 @@
                                                 </form>                                                            
                                             @endif
                                         </div>
-                                    </td>
-                                                                                                          
-                                                                                                                                         
+                                    </td>                                                                                                 
                                 </tr>
                             @endforeach
                         </tbody>
@@ -168,7 +161,6 @@
         </div>
     </div>
 
-    {{-- Chart.js untuk Statistik --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         var ctxPie = document.getElementById('donationChart').getContext('2d');

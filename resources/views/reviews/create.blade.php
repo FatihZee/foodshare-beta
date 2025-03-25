@@ -13,7 +13,6 @@
         <form action="{{ route('reviews.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
-            <!-- Rating -->
             <div class="mb-3">
                 <label class="form-label fw-bold">Rating</label>
                 <div class="rating-stars">
@@ -24,13 +23,11 @@
                 <input type="hidden" name="rating" id="ratingInput" value="1">
             </div>
 
-            <!-- Komentar -->
             <div class="mb-3">
                 <label for="comment" class="form-label fw-bold">Komentar</label>
                 <textarea name="comment" id="comment" class="form-control" rows="4" required></textarea>
             </div>
 
-            <!-- Foto Review -->
             <div class="mb-3">
                 <label class="form-label fw-bold">Foto Review</label>
                 <input type="file" name="photo" class="form-control" accept="image/*" onchange="previewImage(event)">
@@ -39,7 +36,6 @@
                 </div>
             </div>
 
-            <!-- Tombol Submit -->
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-save"></i> Simpan
             </button>
@@ -47,7 +43,6 @@
     </div>
 </div>
 
-<!-- Script untuk bintang rating dan preview gambar -->
 <script>
     document.querySelectorAll('.rating-star').forEach(star => {
         star.addEventListener('click', function () {

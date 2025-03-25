@@ -16,7 +16,6 @@
                     @endif
                     <p class="text-muted">{{ $article->content }}</p>
                     
-                    {{-- Tambahkan embed video YouTube jika ada --}}
                     @if($article->video_url)
                         <div class="mt-4 ratio ratio-16x9">
                             <iframe src="https://www.youtube.com/embed/{{ \Illuminate\Support\Str::afterLast($article->video_url, 'v=') }}" frameborder="0" allowfullscreen></iframe>

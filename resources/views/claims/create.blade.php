@@ -41,8 +41,7 @@
                     @endif
                     
                     @php
-                        // Ambil klaim terbaru user
-                        $claimed = $donation->claims->first();
+                        $claimed = auth()->check() ? $donation->claims->where('user_id', auth()->id())->first() : null;
                     @endphp
 
                     @if ($claimed)
@@ -59,6 +58,16 @@
                         <form method="POST" action="{{ route('claims.store') }}" class="d-inline">
                             @csrf
                             <input type="hidden" name="donation_id" value="{{ $donation->id }}">
+
+                            @guest
+                                <div class="mb-2">
+                                    <input type="text" name="name" class="form-control" placeholder="Nama Anda" required>
+                                </div>
+                                <div class="mb-2">
+                                    <input type="text" name="phone" class="form-control" placeholder="Nomor Telepon" required>
+                                </div>
+                            @endguest
+
                             <button type="submit" class="btn btn-success w-100">
                                 <i class="fas fa-hand-holding-heart"></i> Klaim Makanan
                             </button>
@@ -69,7 +78,6 @@
             </div>
         </div>
         @endforeach
-
     </div>
 </div>
 

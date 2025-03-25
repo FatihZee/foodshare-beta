@@ -62,7 +62,11 @@ class DonationController extends Controller
 
             if ($donor && $donor->phone) {
                 $message = DonationMessageHelper::generateDonationMessage($donation);
-                FonnteHelper::sendMessage($donor->phone, $message);
+                $sendResult = FonnteHelper::sendMessage($donor->phone, $message);
+
+                if (!$sendResult) {
+                    throw new \Exception("Gagal mengirim notifikasi WhatsApp.");
+                }
             }
 
             DB::commit();
@@ -71,6 +75,7 @@ class DonationController extends Controller
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
+
     }
 
     public function show(Donation $donation)
