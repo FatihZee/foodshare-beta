@@ -50,7 +50,7 @@ class DonationController extends Controller
             $donor = Auth::user();
             $donation = Donation::create([
                 'donor_id' => $donor ? $donor->id : null,
-                'donor_name' => $request->donor_name ?: ($donor ? $donor->name : 'Hamba Allah'),
+                'donor_name' => $request->donor_name ?? 'Hamba Allah',
                 'food_name' => $request->food_name,
                 'quantity' => $request->quantity,
                 'location' => $request->location,

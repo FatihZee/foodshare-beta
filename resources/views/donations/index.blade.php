@@ -117,6 +117,10 @@
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                     
+                                            <a href="{{ route('donations.claims', $donation->id) }}" class="btn btn-primary btn-sm px-2" title="Lihat Klaim">
+                                                <i class="fas fa-users"></i>
+                                            </a>
+                                    
                                             @auth
                                                 @php
                                                     $wishlistItem = auth()->user()->wishlist()->where('donation_id', $donation->id)->exists();
@@ -144,15 +148,16 @@
                                                 <a href="{{ route('donations.edit', $donation) }}" class="btn btn-warning btn-sm px-2" title="Edit">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <form action="{{ route('donations.destroy', $donation) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus donasi ini?');">
+                                                <form action="{{ route('donations.destroy', $donation) }}" method="POST" class="d-inline">
                                                     @csrf @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm px-2" title="Hapus">
+                                                    <button type="button" class="btn btn-danger btn-sm deleteButton">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
-                                                </form>
+                                                </form>                                                            
                                             @endif
                                         </div>
-                                    </td>                                                                      
+                                    </td>
+                                                                                                          
                                                                                                                                          
                                 </tr>
                             @endforeach
@@ -200,6 +205,41 @@
                     y: { beginAtZero: true }
                 }
             }
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.querySelectorAll('.deleteButton').forEach(button => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                let form = this.closest("form");
+
+                Swal.fire({
+                    title: "Konfirmasi Hapus",
+                    text: "Apakah Anda yakin ingin menghapus donasi ini? Aksi ini tidak dapat dibatalkan!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Ya, Hapus"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: "Terhapus!",
+                            text: "Donasi Anda telah berhasil dihapus.",
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+
+                        setTimeout(() => {
+                            form.submit();
+                        }, 2000);
+                    }
+                });
+            });
         });
     </script>
 

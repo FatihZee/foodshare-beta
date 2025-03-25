@@ -166,6 +166,10 @@
                     <span>Users</span>
                 </a>
             @endif
+            <a href="{{ route('articles.index') }}">
+                <i class="fas fa-newspaper fa-fw"></i>
+                <span>Artikel</span>
+            </a>
             <a href="{{ route('categories.index') }}">
                 <i class="fas fa-list-alt fa-fw"></i>
                 <span>Kategori Makanan</span>
@@ -187,6 +191,10 @@
                 <span>Wishlist</span>
             </a>
         @else
+            <a href="{{ route('articles.index') }}">
+                <i class="fas fa-newspaper fa-fw"></i>
+                <span>Artikel</span>
+            </a>
             <a href="{{ route('categories.index') }}">
                 <i class="fas fa-list-alt fa-fw"></i>
                 <span>Kategori Makanan</span>

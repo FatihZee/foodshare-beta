@@ -8,8 +8,8 @@ class Donation extends Model
 {
     protected $fillable = [
         'donor_id', 'donor_name', 'food_name', 'quantity', 
-        'location', 'expiration', 'status', 'maps'
-    ];   
+        'location', 'expiration', 'status', 'maps', 'category_id'
+    ];      
 
     public function donor()
     {
@@ -34,6 +34,10 @@ class Donation extends Model
     {
         return $this->belongsToMany(User::class, 'wishlists');
     }
-
+    
+    public function claims()
+    {
+        return $this->hasMany(Claim::class);
+    }
 
 }

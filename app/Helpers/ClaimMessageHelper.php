@@ -13,6 +13,7 @@ class ClaimMessageHelper
             . "🔢 *No. Antrean:* {$queueNumber}\n"
             . "📍 *Lokasi:* {$donation->location}\n"
             . "⏳ *Ambil Sebelum:* {$donation->expiration}\n"
+            . (!empty($donation->maps) ? "🗺️ *Peta:* {$donation->maps}\n" : "")
             . "━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
             . "✅ Mohon datang tepat waktu dan tunjukkan nomor antrean Anda kepada petugas.\n"
             . "🙏 Terima kasih telah menjadi bagian dari FoodShare! Tetap berbagi dan sebarkan kebaikan! ❤️\n"

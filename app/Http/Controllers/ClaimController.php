@@ -6,9 +6,10 @@ use App\Models\Claim;
 use App\Models\Donation;
 use Illuminate\Http\Request;
 use App\Helpers\FonnteHelper;
-use Illuminate\Support\Facades\Auth;
-use App\Helpers\ClaimMessageHelper;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\ClaimMessageHelper;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ClaimController extends Controller
 {
@@ -43,9 +44,18 @@ class ClaimController extends Controller
 
     public function create()
     {
-        $donations = Donation::where('status', 'available')->get();
+        $userId = auth()->id(); // Ambil ID user yang login
+
+        // Ambil semua donasi yang tersedia dan cek apakah user sudah klaim
+        $donations = Donation::where('status', 'available')
+            ->with(['claims' => function ($query) use ($userId) {
+                $query->where('user_id', $userId)->latest(); // Ambil klaim terbaru user
+            }])
+            ->get();
+
         return view('claims.create', compact('donations'));
     }
+  
 
     public function store(Request $request)
     {
@@ -117,4 +127,30 @@ class ClaimController extends Controller
         $claim->delete();
         return redirect()->route('claims.index')->with('success', 'Klaim berhasil dihapus!');
     }
+    
+    public function donationClaims(Donation $donation)
+    {
+        Log::info('Current User ID: ' . Auth::id());
+        Log::info('Donation User ID: ' . $donation->user_id);
+        // Pastikan hanya donor yang bisa melihat klaimnya sendiri
+        if (Auth::id() !== $donation->donor_id) {
+            return redirect()->route('home')->with('error', 'Anda tidak memiliki akses ke donasi ini.');
+        }
+
+        $claims = Claim::with('user')->where('donation_id', $donation->id)->get();
+        return view('claims.donation_claims', compact('donation', 'claims'));
+    }
+    
+    public function approve(Claim $claim)
+    {
+        // Pastikan user hanya bisa menyetujui klaim donasinya sendiri
+        if (Auth::id() !== $claim->donation->donor_id) {
+            return redirect()->route('home')->with('error', 'Anda tidak memiliki akses untuk menyetujui klaim ini.');
+        }
+
+        $claim->update(['status' => 'collected']);
+        return back()->with('success', 'Klaim telah disetujui!');
+    }
+
+
 }

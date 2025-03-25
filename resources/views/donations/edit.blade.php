@@ -13,7 +13,7 @@
         <div class="card shadow-lg border-0">
             <div class="card-body p-4">
                 <h1 class="text-center mb-4">Edit Donasi</h1>
-                <form method="POST" action="{{ route('donations.update', $donation->id) }}">
+                <form method="POST" action="{{ route('donations.update', $donation->id) }}" id="editDonationForm">
                     @csrf
                     @method('PUT')
                     
@@ -45,7 +45,7 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Tanggal Kadaluarsa</label>
-                        <input type="datetime-local" name="expiration" class="form-control" value="{{ date('Y-m-d\\TH:i', strtotime($donation->expiration)) }}" required>
+                        <input type="datetime-local" name="expiration" class="form-control" value="{{ date('Y-m-d\TH:i', strtotime($donation->expiration)) }}" required>
                     </div>
                     
                     <div class="mb-3">
@@ -54,7 +54,7 @@
                     </div>
 
                     <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="button" class="btn btn-primary" id="updateButton">
                             <i class="fas fa-save me-1"></i> Update
                         </button>
                         <a href="{{ route('donations.index') }}" class="btn btn-secondary ms-2">
@@ -65,4 +65,35 @@
             </div>
         </div>
     </div>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        document.getElementById('updateButton').addEventListener('click', function () {
+            Swal.fire({
+                title: "Konfirmasi Perubahan",
+                text: "Apakah Anda yakin ingin menyimpan perubahan ini?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Ya, Simpan"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Berhasil Diperbarui!",
+                        text: "Donasi telah berhasil diperbarui.",
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+    
+                    setTimeout(() => {
+                        document.getElementById('editDonationForm').submit();
+                    }, 2000);
+                }
+            });
+        });
+    </script>
 @endsection
