@@ -39,5 +39,4 @@ class Donation extends Model
     {
         return $this->hasMany(Claim::class);
     }
-
 }

@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Claim;
 use App\Models\Donation;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Helpers\FonnteHelper;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\ClaimMessageHelper;
-use Illuminate\Support\Facades\Auth;
+use App\Helpers\NotificationHelper;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class ClaimController extends Controller
 {
@@ -41,7 +43,6 @@ class ClaimController extends Controller
         return view('claims.index', compact('claims', 'pending', 'collected', 'cancelled', 'claimsPerDay'));
     }
 
-
     public function create()
     {
         $userId = auth()->id();
@@ -55,7 +56,6 @@ class ClaimController extends Controller
         return view('claims.create', compact('donations'));
     }
   
-
     public function store(Request $request)
     {
         $request->validate([
@@ -94,13 +94,23 @@ class ClaimController extends Controller
 
             if ($phone) {
                 $message = ClaimMessageHelper::generateClaimMessage($name, $donation, $queueNumber);
+                $shortNotif = NotificationHelper::formatShortNotification($name, $donation, $queueNumber);
                 $sent = FonnteHelper::sendMessage($phone, $message);
-
+            
+                Notification::create([
+                    'user_id' => $userId,
+                    'claim_id' => $claim->id,
+                    'phone' => $phone,
+                    'message' => $shortNotif,
+                    'is_sent' => $sent,
+                    'is_read' => false,
+                ]);
+            
                 if (!$sent) {
                     DB::rollBack();
                     return back()->with('error', 'Gagal mengirim notifikasi WhatsApp. Silakan coba lagi.');
                 }
-            }
+            }          
 
             DB::commit();
             return redirect()->route('claims.index')->with('success', 'Klaim berhasil dibuat dan pesan WhatsApp dikirim!');
@@ -109,7 +119,6 @@ class ClaimController extends Controller
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
-
 
     public function show(Claim $claim)
     {

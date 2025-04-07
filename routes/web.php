@@ -9,6 +9,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     return view('home');
@@ -42,4 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/donations/{donation}/claims', [ClaimController::class, 'donationClaims'])->name('donations.claims');
     Route::post('/claims/{claim}/approve', [ClaimController::class, 'approve'])->name('claims.approve');
     Route::post('/claims/{claim}/reject', [ClaimController::class, 'reject'])->name('claims.reject');
+    
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
 });

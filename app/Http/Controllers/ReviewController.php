@@ -96,7 +96,6 @@ class ReviewController extends Controller
         return redirect()->route('reviews.index')->with('success', 'Review berhasil diperbarui!');
     }
 
-
     public function destroy(Review $review)
     {
         if (auth()->id() !== $review->user_id) {
