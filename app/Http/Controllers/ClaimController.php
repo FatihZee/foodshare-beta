@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Claim;
 use App\Models\Donation;
+use Illuminate\Support\Str;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Helpers\FonnteHelper;
@@ -12,6 +13,7 @@ use App\Helpers\ClaimMessageHelper;
 use App\Helpers\NotificationHelper;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class ClaimController extends Controller
 {
@@ -30,7 +32,6 @@ class ClaimController extends Controller
         $pending = Claim::where('status', 'pending')->count();
         $collected = Claim::where('status', 'collected')->count();
         $cancelled = Claim::where('status', 'cancelled')->count();
-
 
         $claimsPerDay = Claim::select(
                 DB::raw('DATE(created_at) as date'),
@@ -60,9 +61,8 @@ class ClaimController extends Controller
     {
         $request->validate([
             'donation_id' => 'required|exists:donations,id',
-            'name' => auth()->check() ? 'nullable' : 'required|string|max:255',
             'phone' => auth()->check() ? 'nullable' : 'required|string|max:15',
-        ]);
+        ]);        
 
         DB::beginTransaction();
         try {
@@ -74,9 +74,36 @@ class ClaimController extends Controller
 
             $queueNumber = Claim::where('donation_id', $donation->id)->count() + 1;
 
-            $userId = auth()->id();
-            $name = auth()->check() ? auth()->user()->name : $request->name;
-            $phone = auth()->check() ? auth()->user()->phone : $request->phone;
+            $name = '';
+            $phone = '';
+            $userId = null;
+
+            if (auth()->check()) {
+                $userId = auth()->id();
+                $name = auth()->user()->name;
+                $phone = auth()->user()->phone;
+            } else {
+                $phone = $request->phone;
+
+                $existingUser = User::where('phone', $phone)->first();
+
+                if (!$existingUser) {
+                    $randomSuffix = Str::random(6);
+                    $generatedName = 'Guest ' . strtoupper(substr($randomSuffix, 0, 4));
+
+                    $existingUser = User::create([
+                        'name' => $generatedName,
+                        'email' => 'guest_' . time() . '_' . $randomSuffix . '@example.com',
+                        'password' => bcrypt(Str::random(10)),
+                        'role' => 'user',
+                        'phone' => $phone,
+                        'profilePicture' => null,
+                    ]);
+                }
+
+                $userId = $existingUser->id;
+                $name = $existingUser->name;
+            }
 
             $claim = Claim::create([
                 'user_id' => $userId,
@@ -96,7 +123,7 @@ class ClaimController extends Controller
                 $message = ClaimMessageHelper::generateClaimMessage($name, $donation, $queueNumber);
                 $shortNotif = NotificationHelper::formatShortNotification($name, $donation, $queueNumber);
                 $sent = FonnteHelper::sendMessage($phone, $message);
-            
+
                 Notification::create([
                     'user_id' => $userId,
                     'claim_id' => $claim->id,
@@ -105,12 +132,12 @@ class ClaimController extends Controller
                     'is_sent' => $sent,
                     'is_read' => false,
                 ]);
-            
+
                 if (!$sent) {
                     DB::rollBack();
                     return back()->with('error', 'Gagal mengirim notifikasi WhatsApp. Silakan coba lagi.');
                 }
-            }          
+            }
 
             DB::commit();
             return redirect()->route('claims.index')->with('success', 'Klaim berhasil dibuat dan pesan WhatsApp dikirim!');

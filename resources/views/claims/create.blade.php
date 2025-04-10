@@ -61,9 +61,6 @@
 
                             @guest
                                 <div class="mb-2">
-                                    <input type="text" name="name" class="form-control" placeholder="Nama Anda" required>
-                                </div>
-                                <div class="mb-2">
                                     <input type="text" name="phone" class="form-control" placeholder="Nomor Telepon" required>
                                 </div>
                             @endguest
@@ -80,5 +77,4 @@
         @endforeach
     </div>
 </div>
-
 @endsection
