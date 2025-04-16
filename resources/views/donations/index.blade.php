@@ -116,29 +116,6 @@
                                                 <i class="fas fa-users"></i>
                                             </a>
                                     
-                                            @auth
-                                                @php
-                                                    $wishlistItem = auth()->user()->wishlist()->where('donation_id', $donation->id)->exists();
-                                                @endphp
-                                    
-                                                @if ($wishlistItem)
-                                                    <form action="{{ route('wishlist.destroy', $donation->id) }}" method="POST" class="d-inline">
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm px-2" title="Hapus dari Wishlist">
-                                                            <i class="fas fa-heart-broken"></i>
-                                                        </button>
-                                                    </form>
-                                                @else
-                                                    <form action="{{ route('wishlist.store') }}" method="POST" class="d-inline">
-                                                        @csrf
-                                                        <input type="hidden" name="donation_id" value="{{ $donation->id }}">
-                                                        <button type="submit" class="btn btn-warning btn-sm px-2" title="Tambah ke Wishlist">
-                                                            <i class="fas fa-heart"></i>
-                                                        </button>
-                                                    </form>
-                                                @endif
-                                            @endauth
-                                    
                                             @if (Auth::check() && (Auth::id() === $donation->donor_id || auth()->user()->role === 'admin'))
                                                 <a href="{{ route('donations.edit', $donation) }}" class="btn btn-warning btn-sm px-2" title="Edit">
                                                     <i class="fas fa-edit"></i>

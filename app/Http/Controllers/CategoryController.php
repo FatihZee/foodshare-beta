@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Models\Wishlist;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
     public function index()
     {
         $categories = Category::all();
-        return view('categories.index', compact('categories'));
+        $wishlistCategoryIds = Auth::check()
+            ? Wishlist::where('user_id', Auth::id())->pluck('category_id')->toArray()
+            : [];
+
+        return view('categories.index', compact('categories', 'wishlistCategoryIds'));
     }
 
     public function create()

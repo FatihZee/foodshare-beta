@@ -30,11 +30,6 @@ class Donation extends Model
         return $this->belongsTo(Category::class);
     }
     
-    public function wishlistedBy()
-    {
-        return $this->belongsToMany(User::class, 'wishlists');
-    }
-    
     public function claims()
     {
         return $this->hasMany(Claim::class);
