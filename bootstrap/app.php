@@ -18,6 +18,6 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withSchedule(function (Schedule $schedule) {
-        $schedule->command('donations:update-status')->everyMinute();
+        $schedule->command('donations:update-status')->everySecond();
     })
     ->create();
